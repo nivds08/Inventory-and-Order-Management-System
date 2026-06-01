@@ -23,8 +23,9 @@ Deploy the backend and PostgreSQL on **Railway**, and the React frontend on **Ve
 
 1. In the same project, click **New** → **GitHub Repo** → select your repository.
 2. Open the new service → **Settings**:
-   - **Root Directory:** `backend`
-   - **Builder:** Dockerfile (uses `backend/Dockerfile` + `railway.toml`)
+   - **Root Directory:** `backend` *(recommended)* — or leave blank to use the repo-root `Dockerfile`
+   - **Builder:** **Dockerfile** (not Railpack/Nixpacks auto-detect)
+   - If you see Railpack failures, click **Clear build cache** and redeploy after pushing the latest code
 3. **Variables** — add or reference:
 
    | Variable | Value |
@@ -51,10 +52,18 @@ Deploy the backend and PostgreSQL on **Railway**, and the React frontend on **Ve
 
 | Issue | Fix |
 |-------|-----|
-| Build fails | Confirm **Root Directory** is `backend` |
+| **`railpack process exited with an error`** | Railway tried to auto-detect the repo root (monorepo). **Fix A:** Push latest code (includes root `railway.toml` + `Dockerfile`). **Fix B:** Service → **Settings** → set **Root Directory** to `backend` OR set **Builder** to **Dockerfile**. Redeploy. |
+| Build fails / wrong files in logs | Use **Root Directory** `backend` *or* leave root empty and use repo-root `Dockerfile` (both are supported after the fix above). |
 | DB connection error | Ensure `DATABASE_URL` references Postgres; URL uses `postgresql://` (auto-normalized) |
 | CORS errors in browser | Add exact Vercel URL to `CORS_ORIGINS` (include `https://`, no trailing slash) |
 | App not listening | Dockerfile uses `$PORT` — do not override start command unless you keep `$PORT` |
+
+**Two valid Railway setups (pick one):**
+
+| Option | Root Directory | What builds |
+|--------|----------------|-------------|
+| **A (recommended)** | `backend` | `backend/Dockerfile` + `backend/railway.toml` |
+| **B** | *(empty / repo root)* | Root `Dockerfile` + `railway.toml` |
 
 ---
 

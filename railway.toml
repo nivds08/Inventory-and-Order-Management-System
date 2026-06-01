@@ -1,0 +1,11 @@
+# Railway config when the service Root Directory is the repository root.
+# This disables Railpack auto-detect and builds with Docker instead.
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+healthcheckPath = "/health"
+healthcheckTimeout = 120
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 5

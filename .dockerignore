@@ -1,0 +1,12 @@
+frontend
+backend/.venv
+backend/venv
+**/__pycache__
+**/*.py[cod]
+.git
+.env
+.env.*
+!.env.example
+*.md
+docker-compose.yml
+DEPLOYMENT.md
