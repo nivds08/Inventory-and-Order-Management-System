@@ -77,6 +77,16 @@ async def validation_error_handler(_: Request, exc: RequestValidationError):
     )
 
 
+@app.get("/")
+def root():
+    return {
+        "service": "Inventory & Order Management API",
+        "status": "running",
+        "docs": "/docs",
+        "health": "/health",
+    }
+
+
 @app.get("/health")
 def health_check():
     return {"status": "ok"}
