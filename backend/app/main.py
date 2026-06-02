@@ -1,4 +1,6 @@
 from contextlib import asynccontextmanager
+import logging
+import os
 
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
@@ -12,11 +14,25 @@ from app.exceptions import AppError
 from app.routers import customers, dashboard, orders, products
 
 settings = get_settings()
+logger = logging.getLogger(__name__)
+
+
+def _validate_database_config() -> None:
+    is_railway = bool(os.getenv("RAILWAY_ENVIRONMENT") or os.getenv("RAILWAY_SERVICE_ID"))
+    if is_railway and "localhost" in settings.resolved_database_url:
+        raise RuntimeError(
+            "DATABASE_URL is not configured for Railway. "
+            "Open your backend service → Variables → add DATABASE_URL "
+            "and reference it from your PostgreSQL service, then redeploy."
+        )
 
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
+    logging.basicConfig(level=logging.INFO)
+    _validate_database_config()
     init_db()
+    logger.info("Application startup complete")
     yield
 
 
