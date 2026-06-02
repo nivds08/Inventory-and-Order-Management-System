@@ -2,6 +2,7 @@ from collections.abc import Generator
 
 import logging
 import time
+from urllib.parse import urlparse
 
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
