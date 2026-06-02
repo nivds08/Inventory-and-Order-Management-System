@@ -30,6 +30,7 @@ def _validate_database_config() -> None:
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     logging.basicConfig(level=logging.INFO)
+    logger.info("DATABASE_URL target: %s", settings.database_host_label)
     _validate_database_config()
     init_db()
     logger.info("Application startup complete")

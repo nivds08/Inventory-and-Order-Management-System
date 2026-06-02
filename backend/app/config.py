@@ -1,8 +1,8 @@
 from functools import lru_cache
+from urllib.parse import urlparse
 
 from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
@@ -37,6 +37,11 @@ class Settings(BaseSettings):
                 return url.replace("postgres://", "postgresql://", 1)
             return url
         return self.database_url
+
+    @property
+    def database_host_label(self) -> str:
+        parsed = urlparse(self.resolved_database_url)
+        return f"{parsed.hostname}:{parsed.port or 5432}/{parsed.path.lstrip('/')}"
 
     @property
     def cors_origin_list(self) -> list[str]:
