@@ -33,6 +33,7 @@ Deploy the backend and PostgreSQL on **Railway**, and the React frontend on **Ve
    | Variable | Value |
    |----------|--------|
    | `DATABASE_URL` | `${{Postgres.DATABASE_URL}}` — use **Add Reference** → pick your **PostgreSQL** service → `DATABASE_URL` |
+   | `PORT` | `8000` — **required if Networking shows port 8000** (see troubleshooting below) |
    | `CORS_ORIGINS` | Your Vercel URL(s), e.g. `https://your-app.vercel.app` (can add after Vercel deploy) |
    | `ENVIRONMENT` | `production` |
 
@@ -58,6 +59,7 @@ Deploy the backend and PostgreSQL on **Railway**, and the React frontend on **Ve
 |-------|-----|
 | **`railpack process exited with an error`** | Railway tried to auto-detect the repo root (monorepo). **Fix A:** Push latest code (includes root `railway.toml` + `Dockerfile`). **Fix B:** Service → **Settings** → set **Root Directory** to `backend` OR set **Builder** to **Dockerfile**. Redeploy. |
 | **Healthcheck failure** (build OK, deploy fails) | **`DATABASE_URL` not set.** Backend service → **Variables** → add `DATABASE_URL` referencing Postgres → **Redeploy**. Check **Deploy Logs** for `DATABASE_URL is not configured`. |
+| **"Application failed to respond"** (deploy OK, browser error) | **Port mismatch.** Deploy logs show `Uvicorn ... 8080` but Networking shows **8000**. **Fix:** Backend → **Variables** → add `PORT` = `8000` → **Redeploy**. Deploy logs must show `API listening on ... 8000`. **Or** change Networking port to **8080** to match logs. |
 | Build fails / wrong files in logs | Use **Root Directory** `backend` *or* leave root empty and use repo-root `Dockerfile` (both are supported after the fix above). |
 | DB connection error | Ensure `DATABASE_URL` references Postgres; URL uses `postgresql://` (auto-normalized) |
 | CORS errors in browser | Add exact Vercel URL to `CORS_ORIGINS` (include `https://`, no trailing slash) |
